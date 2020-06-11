@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\PostOffice;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/get-posts', function () {
+	return PostOffice::all();
+});
+Route::get('/get-posts-by-psc/{psc}', function ($psc) {
+	return PostOffice::where('psc',$psc)->get();
+});
+Route::get('/get-posts-by-obec/{obec}', function ($obec) {
+	return PostOffice::where('City',$obec)->get();
 });

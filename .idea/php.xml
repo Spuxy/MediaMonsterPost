@@ -100,6 +100,13 @@
       <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
       <path value="$PROJECT_DIR$/vendor/nesbot/carbon" />
       <path value="$PROJECT_DIR$/vendor/psy/psysh" />
+      <path value="$PROJECT_DIR$/vendor/maxakawizard/json-collection-parser" />
+      <path value="$PROJECT_DIR$/vendor/rodenastyle/stream-parser" />
+      <path value="$PROJECT_DIR$/vendor/tightenco/collect" />
+      <path value="$PROJECT_DIR$/vendor/salsify/json-streaming-parser" />
+      <path value="$PROJECT_DIR$/vendor/mtownsend/xml-to-array" />
+      <path value="$PROJECT_DIR$/vendor/laravie/parser" />
+      <path value="$PROJECT_DIR$/vendor/orchestra/parser" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
