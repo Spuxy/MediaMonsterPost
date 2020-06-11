@@ -44,7 +44,7 @@ class AddPostsCommand extends Command {
 	public function process($payload) {
 		collect($payload)->map(function($office) {
 			$post = new PostOffice();
-			if ( $post->isAlreadySaved($office->PSC) ) {
+			if ( $post->isAlreadySaved($office->ADRESA) ) {
 				$this->info($office->NAZEV . ' is already saved');
 
 				return;

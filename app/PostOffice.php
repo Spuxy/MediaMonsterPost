@@ -12,8 +12,8 @@ class PostOffice extends Model
 		return $this->hasMany(PostOfficeHour::class);
     }
 
-    public function isAlreadySaved($psc){
-		if (count(PostOffice::where('PSC', $psc)->get())==0){
+    public function isAlreadySaved($address){
+		if (count(PostOffice::where('Address', $address)->get())==0){
 			return false;
 		}
 		return true;
