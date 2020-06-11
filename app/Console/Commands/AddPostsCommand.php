@@ -42,22 +42,22 @@ class AddPostsCommand extends Command {
 	 * @param $payload
 	 */
 	public function process($payload) {
-		collect($payload)->map(function($mrd) {
+		collect($payload)->map(function($office) {
 			$post = new PostOffice();
-			if ( $post->isAlreadySaved($mrd->PSC) ) {
-				$this->info($mrd->NAZEV . ' is already saved');
+			if ( $post->isAlreadySaved($office->PSC) ) {
+				$this->info($office->NAZEV . ' is already saved');
 
 				return;
 			}
-			$post->psc = $mrd->PSC;
-			$post->name = $mrd->NAZEV;
-			$post->address = $mrd->ADRESA;
-			$post->X = $mrd->SOUR_X;
-			$post->Y = $mrd->SOUR_Y;
-			$post->City = $mrd->OBEC;
-			$post->C_City = $mrd->C_OBCE;
+			$post->psc = $office->PSC;
+			$post->name = $office->NAZEV;
+			$post->address = $office->ADRESA;
+			$post->X = $office->SOUR_X;
+			$post->Y = $office->SOUR_Y;
+			$post->City = $office->OBEC;
+			$post->C_City = $office->C_OBCE;
 			$post->save();
-			$this->warn($mrd->NAZEV . ' Has been added to DB');
+			$this->warn($office->NAZEV . ' Has been added to DB');
 		});
 	}
 
