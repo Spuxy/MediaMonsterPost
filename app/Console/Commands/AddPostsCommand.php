@@ -28,13 +28,22 @@ class AddPostsCommand extends Command {
 	 * @return mixed
 	 */
 	public function handle() {
-		$payload = [];
 		// url ('http://napostu.ceskaposta.cz/vystupy/balikovny.xml');
 		$xml = simplexml_load_file(config('postoffice.api'));
+		$this->process($this->payload($xml));
+	}
+
+	/**
+	 * Payload iterate to array to wrap values into collection
+	 * @param $xml
+	 * @return array
+	 */
+	public function payload($xml) {
+		$payload = [];
 		for ( $i = 0; $i < count($xml) - 1; $i++ ) {
 			$payload[ $i ] = $xml->row[ $i ];
 		}
-		$this->process($payload);
+		return $payload;
 	}
 
 	/**
@@ -46,7 +55,6 @@ class AddPostsCommand extends Command {
 			$post = new PostOffice();
 			if ( $post->isAlreadySaved($office->ADRESA) ) {
 				$this->info($office->NAZEV . ' is already saved');
-
 				return;
 			}
 			$post->psc = $office->PSC;
