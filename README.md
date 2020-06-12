@@ -7,3 +7,5 @@ API bude mít tři funkce dostupné přes GET:
 ● vypsat pobočky podle parametru OBEC -> /get-posts-by-obec/{obec}
 
 Prikaz k pouziti je post:fetch
+
+zkomplikovano diky prekladu do eng

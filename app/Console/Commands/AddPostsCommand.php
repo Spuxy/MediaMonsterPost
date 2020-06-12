@@ -23,10 +23,15 @@ class AddPostsCommand extends Command {
 	 * @var PostOfficeHours
 	 */
 	private $postOfficeHours;
+	/**
+	 * @var PostOffice
+	 */
+	private $postOffice;
 
-	public function __construct(PostOfficeHours $postOfficeHours) {
+	public function __construct(PostOfficeHours $postOfficeHours, PostOffice $postOffice) {
 		parent::__construct();
 		$this->postOfficeHours = $postOfficeHours;
+		$this->postOffice = $postOffice;
 	}
 
 	/**
@@ -59,40 +64,32 @@ class AddPostsCommand extends Command {
 	 */
 	public function process($payload) {
 		collect($payload)->map(function($office) {
-			$post = new PostOffice();
+
 			$postOffice = PostOffice::where('Address', $office->ADRESA)->first();
 
 			if ( $postOffice == null ) {
-				$post->psc = $office->PSC;
-				$post->name = $office->NAZEV;
-				$post->address = $office->ADRESA;
-				$post->X = $office->SOUR_X;
-				$post->Y = $office->SOUR_Y;
-				$post->City = $office->OBEC;
-				$post->C_City = $office->C_OBCE;
-				$post->save();
-				PostOfficeHours::insertToPostOffice($office->OTEV_DOBY->den, $post->getAttributes()[ 'id' ]);
+				$this->postOffice->newPostOffice($office);
 				$this->warn($office->NAZEV . ' Has been added to DB');
+
 				return;
 			}
 
 			if (
-				 $postOffice[ 'PSC' ] == $office->PSC &&
-				 $postOffice[ 'Name' ] == $office->NAZEV &&
-				 $postOffice[ 'Address' ] == $office->ADRESA &&
-				 $postOffice[ 'X' ] == $office->SOUR_X &&
-				 $postOffice[ 'Y' ] == $office->SOUR_Y &&
-				 $postOffice[ 'City' ] == $office->C_OBCE &&
-				 $postOffice[ 'C_City' ] == $office->OBEC
-			)
-			{
+				$postOffice[ 'PSC' ] == $office->PSC &&
+				$postOffice[ 'Name' ] == $office->NAZEV &&
+				$postOffice[ 'Address' ] == $office->ADRESA &&
+				$postOffice[ 'X' ] == $office->SOUR_X &&
+				$postOffice[ 'Y' ] == $office->SOUR_Y &&
+				$postOffice[ 'City' ] == $office->OBEC &&
+				$postOffice[ 'C_City' ] == $office->C_OBCE
+			) {
 				$this->info($postOffice[ 'Name' ] . ' has not changed');
+			} else {
+				PostOffice::updatePostOffice($office);
+				$this->warn('id: '.$postOffice[ 'id' ] . ' Has been updated');
 			}
 
-			$post::updatePostOffice($office);
 			PostOfficeHours::compare($office->OTEV_DOBY->den, $postOffice[ 'id' ]);
-			$this->warn($postOffice->Name . ' Has been updated');
-
 		});
 	}
 

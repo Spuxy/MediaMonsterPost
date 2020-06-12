@@ -13,17 +13,17 @@ class PostOffice extends Model {
 	}
 
 	public static function updatePostOffice($office) {
-		$wtf = PostOffice::where('Address', $office->ADRESA)->first();
-		$wtf->psc = $office->PSC;
-		$wtf->Name = $office->NAZEV;
-		$wtf->Address = $office->ADRESA;
-		$wtf->X = $office->SOUR_X;
-		$wtf->Y = $office->SOUR_Y;
-		$wtf->City = $office->C_OBCE;
-		$wtf->C_City = $office->OBEC;
-		$wtf->save();
+		$post = PostOffice::where('Address', $office->ADRESA)->first();
+		$post->psc = $office->PSC;
+		$post->Name = $office->NAZEV;
+		$post->Address = $office->ADRESA;
+		$post->X = $office->SOUR_X;
+		$post->Y = $office->SOUR_Y;
+		$post->City = $office->OBEC;
+		$post->C_City = $office->C_OBCE;
+		$post->save();
 
-		return $wtf;
+		return $post;
 	}
 
 	public function isAlreadySaved($address) {
@@ -36,5 +36,18 @@ class PostOffice extends Model {
 
 	public function getAddress($address) {
 		return count(PostOffice::where('Address', $address)->get());
+	}
+
+	public function newPostOffice($office) {
+		$post = new static();
+		$post->psc = $office->PSC;
+		$post->name = $office->NAZEV;
+		$post->address = $office->ADRESA;
+		$post->X = $office->SOUR_X;
+		$post->Y = $office->SOUR_Y;
+		$post->City = $office->OBEC;
+		$post->C_City = $office->C_OBCE;
+		$post->save();
+		PostOfficeHours::insertToPostOffice($office->OTEV_DOBY->den, $post->getAttributes()[ 'id' ]);
 	}
 }
