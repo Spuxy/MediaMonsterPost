@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\PostOffice;
+use App\PostOfficeHours;
 
 class AddPostsCommand extends Command {
 
@@ -18,9 +19,14 @@ class AddPostsCommand extends Command {
 	 * @var string
 	 */
 	protected $description = 'Fetch and add posts in XML format to DB';
+	/**
+	 * @var PostOfficeHours
+	 */
+	private $postOfficeHours;
 
-	public function __construct() {
+	public function __construct(PostOfficeHours $postOfficeHours) {
 		parent::__construct();
+		$this->postOfficeHours = $postOfficeHours;
 	}
 
 	/**
@@ -43,6 +49,7 @@ class AddPostsCommand extends Command {
 		for ( $i = 0; $i < count($xml) - 1; $i++ ) {
 			$payload[ $i ] = $xml->row[ $i ];
 		}
+
 		return $payload;
 	}
 
@@ -53,19 +60,39 @@ class AddPostsCommand extends Command {
 	public function process($payload) {
 		collect($payload)->map(function($office) {
 			$post = new PostOffice();
-			if ( $post->isAlreadySaved($office->ADRESA) ) {
-				$this->info($office->NAZEV . ' is already saved');
+			$postOffice = PostOffice::where('Address', $office->ADRESA)->first();
+
+			if ( $postOffice == null ) {
+				$post->psc = $office->PSC;
+				$post->name = $office->NAZEV;
+				$post->address = $office->ADRESA;
+				$post->X = $office->SOUR_X;
+				$post->Y = $office->SOUR_Y;
+				$post->City = $office->OBEC;
+				$post->C_City = $office->C_OBCE;
+				$post->save();
+				PostOfficeHours::insertToPostOffice($office->OTEV_DOBY->den, $post->getAttributes()[ 'id' ]);
+				$this->warn($office->NAZEV . ' Has been added to DB');
 				return;
 			}
-			$post->psc = $office->PSC;
-			$post->name = $office->NAZEV;
-			$post->address = $office->ADRESA;
-			$post->X = $office->SOUR_X;
-			$post->Y = $office->SOUR_Y;
-			$post->City = $office->OBEC;
-			$post->C_City = $office->C_OBCE;
-			$post->save();
-			$this->warn($office->NAZEV . ' Has been added to DB');
+
+			if (
+				 $postOffice[ 'PSC' ] == $office->PSC &&
+				 $postOffice[ 'Name' ] == $office->NAZEV &&
+				 $postOffice[ 'Address' ] == $office->ADRESA &&
+				 $postOffice[ 'X' ] == $office->SOUR_X &&
+				 $postOffice[ 'Y' ] == $office->SOUR_Y &&
+				 $postOffice[ 'City' ] == $office->C_OBCE &&
+				 $postOffice[ 'C_City' ] == $office->OBEC
+			)
+			{
+				$this->info($postOffice[ 'Name' ] . ' has not changed');
+			}
+
+			$post::updatePostOffice($office);
+			PostOfficeHours::compare($office->OTEV_DOBY->den, $postOffice[ 'id' ]);
+			$this->warn($postOffice->Name . ' Has been updated');
+
 		});
 	}
 

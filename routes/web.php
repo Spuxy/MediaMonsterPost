@@ -17,6 +17,12 @@ use App\PostOffice;
 Route::get('/get-posts', function () {
 	return PostOffice::all();
 });
+Route::get('/kokotina', function () {
+	if (true){
+		return 'ahoj';
+	}
+	return 'cus kote';
+});
 Route::get('/get-posts-by-psc/{psc}', function ($psc) {
 	return PostOffice::where('psc',$psc)->get();
 });

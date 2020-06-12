@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostOfficesTable extends Migration
+class CreatePostOfficeHoursTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class CreatePostOfficesTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_offices', function (Blueprint $table) {
+        Schema::create('post_office_hours', function (Blueprint $table) {
             $table->id();
-            $table->integer('PSC');
-            $table->string('Name');
-            $table->string('Address');
-            $table->decimal('X',12,2);
-            $table->decimal('Y',12,2);
-            $table->string('City');
-            $table->string('C_City');
+            $table->unsignedBigInteger('post_office_id');
+            $table->string('day');
+            $table->time('from')->nullable();
+            $table->time('to')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class CreatePostOfficesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_offices');
+        Schema::dropIfExists('post_office_hours');
     }
 }
