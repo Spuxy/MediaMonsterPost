@@ -39,7 +39,7 @@ class AddPostsCommand extends Command {
 	 * @return mixed
 	 */
 	public function handle() {
-		// url ('http://napostu.ceskaposta.cz/vystupy/balikovny.xml');
+
 		$xml = simplexml_load_file(config('postoffice.api'));
 		$this->process($this->payload($xml));
 	}
