@@ -13,8 +13,6 @@ use App\PostOffice;
 | contains the "web" middleware group. Now create something great!
 |
 */
-<<<<<<< HEAD
-
 Route::get('/get-posts', function () {
 	return PostOffice::all();
 });
@@ -25,5 +23,3 @@ Route::get('/get-posts-by-psc/{psc}', function ($psc) {
 Route::get('/get-posts-by-obec/{obec}', function ($obec) {
 	return PostOffice::where('City',$obec)->get();
 });
-=======
->>>>>>> 1f28785f979eb85473d0eea01a754fe45821e5c1
